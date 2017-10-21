@@ -157,15 +157,15 @@ func (t *App) GetLoggedUsers (r *http.Request, request *PaginationRequest, resul
 	return nil
 }
 
-func (t *App) GetSessions (r *http.Request, request *EmailRequest, result []SessionRow) error {
+func (t *App) GetSessions (r *http.Request, request *EmailRequest, result *[]SessionRow) error {
 	fmt.Println("GetSessions")
 
 	sessionsRows, err := getSessionsRows(request.Email)
 	if err != nil {
-		return errors.New("database error")
+		return err
 	}
 
-	result = sessionsRows
+	*result = sessionsRows
 	return nil
 }
 

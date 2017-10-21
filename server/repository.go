@@ -16,7 +16,6 @@ type EmailRow struct {
 }
 
 type SessionRow struct {
-	EmailId int
 	SessionKey string
 	Label string
 }
@@ -196,18 +195,17 @@ func getSessionsRows(emailAddress string) ([]SessionRow, error) {
 		return nil, errors.New("Email address does not exist")
 	}
 
-	rows, err := connection.Query("SELECT email_id, session_key, label FROM sessions WHERE email_id = ?", emailId)
+	rows, err := connection.Query("SELECT session_key, label FROM sessions WHERE email_id = ?", emailId)
 
 	if err != nil {
-		fmt.Println(err)
-		return nil, errors.New("database error")
+		return []SessionRow{}, nil
 	}
 
 	var sessionRows []SessionRow = []SessionRow{}
 
 	for rows.Next() {
 		var sessionRow SessionRow
-		rows.Scan(&sessionRow.EmailId, sessionRow.SessionKey, sessionRow.Label)
+		rows.Scan(&sessionRow.SessionKey, &sessionRow.Label)
 
 		sessionRows = append(sessionRows, sessionRow)
 	}
