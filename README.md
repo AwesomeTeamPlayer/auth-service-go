@@ -35,7 +35,7 @@ Params:
 * password
 * label
 
-Returns session key string on success, `false` otherwise.
+Returns session key string on success, empty string otherwise.
 
 Creates `users.logged.in` event:
 ```json

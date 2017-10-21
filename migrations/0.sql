@@ -7,7 +7,8 @@ CREATE TABLE emails (
 );
 
 CREATE TABLE sessions (
-  id INT NOT NULL,
+  id INT NOT NULL  AUTO_INCREMENT,
+  email_id INT NOT NULL,
   session_key TEXT NOT NULL,
   label TEXT NOT NULL,
   CONSTRAINT emails_id PRIMARY KEY (ID)
