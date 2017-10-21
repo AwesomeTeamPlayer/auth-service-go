@@ -41,6 +41,11 @@ type EmailRowsResponse struct {
 	Count uint
 }
 
+type LoggedEmailsResponse struct {
+	LoggedEmails []string
+	Count uint
+}
+
 type App int
 
 func (t *App) CreateUser (r *http.Request, request *EmailRequest, result *bool) error {
@@ -137,10 +142,30 @@ func (t *App) GetEmails (r *http.Request, request *PaginationRequest, result *Em
 	if err != nil {
 		return errors.New("database error")
 	}
-
-	fmt.Println(EmailRowsResponse{emails, count})
-
 	*result = EmailRowsResponse{emails, count}
+	return nil
+}
+
+func (t *App) GetLoggedUsers (r *http.Request, request *PaginationRequest, result *LoggedEmailsResponse) error {
+	fmt.Println("GetLoggedUsers")
+	limit := uint(request.Limit)
+
+	emails := getLoggedEmails(uint(request.Page * limit), limit)
+	count := countAllLoggedEmails()
+
+	*result = LoggedEmailsResponse{emails, count}
+	return nil
+}
+
+func (t *App) GetSessions (r *http.Request, request *EmailRequest, result []SessionRow) error {
+	fmt.Println("GetSessions")
+
+	sessionsRows, err := getSessionsRows(request.Email)
+	if err != nil {
+		return errors.New("database error")
+	}
+
+	result = sessionsRows
 	return nil
 }
 

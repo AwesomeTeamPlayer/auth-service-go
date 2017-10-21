@@ -101,6 +101,7 @@ It returns users list of existing sessions:
 ```json
 [
    {
+      "email": "address@email.com",
       "key":"abc123...",
       "label": "Some text"
    },

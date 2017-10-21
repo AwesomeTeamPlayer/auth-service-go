@@ -15,6 +15,12 @@ type EmailRow struct {
 	HasPassword bool
 }
 
+type SessionRow struct {
+	EmailId int
+	SessionKey string
+	Label string
+}
+
 func connect(host string, port int, user string, password string, database string) *sql.DB {
 	var connectString string = user + ":" + password + "@tcp(" + host + ":" + strconv.Itoa(port) + ")/" + database
 
@@ -149,6 +155,64 @@ func getEmails(offset uint, limit uint) ([]EmailRow, error) {
 	}
 
 	return emailRows, nil
+}
+
+func getLoggedEmails(offset uint, limit uint) ([]string) {
+	rows, err := connection.Query(
+		"SELECT emails.email FROM emails INNER JOIN sessions ON emails.id = sessions.email_id GROUP BY emails.email ORDER BY emails.email ASC LIMIT ?, ?",
+		offset, limit)
+
+	if err != nil {
+		return []string{}
+	}
+
+	var emailRows []string = []string{}
+
+	for rows.Next() {
+		var email string
+		rows.Scan(&email)
+
+		emailRows = append(emailRows, email)
+	}
+
+	return emailRows
+}
+
+func countAllLoggedEmails() uint {
+	var count uint
+	err := connection.QueryRow("SELECT count(emails.email) FROM emails INNER JOIN sessions ON emails.id = sessions.email_id GROUP BY emails.email").Scan(&count)
+
+	if err != nil {
+		return 0
+	}
+
+	return count
+}
+
+func getSessionsRows(emailAddress string) ([]SessionRow, error) {
+
+	emailId := findEmailId(emailAddress)
+	if emailId == 0 {
+		return nil, errors.New("Email address does not exist")
+	}
+
+	rows, err := connection.Query("SELECT email_id, session_key, label FROM sessions WHERE email_id = ?", emailId)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("database error")
+	}
+
+	var sessionRows []SessionRow = []SessionRow{}
+
+	for rows.Next() {
+		var sessionRow SessionRow
+		rows.Scan(&sessionRow.EmailId, sessionRow.SessionKey, sessionRow.Label)
+
+		sessionRows = append(sessionRows, sessionRow)
+	}
+
+	return sessionRows, nil
 }
 
 func getHashedPassword(email string) (string, error) {
