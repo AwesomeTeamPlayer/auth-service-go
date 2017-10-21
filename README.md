@@ -58,6 +58,25 @@ Creates `users.logged.out` event:
 }
 ```
 
+### App.GetEmails
+Params:
+* page (start counting from 0)
+* limit (at least 1)
+
+Returns emails in ascent order:
+```json
+{
+  "results": [ 
+    {
+      "emailAddress": "address@email.com",
+      "hasPassword": true
+    },
+    //  ...
+  ],
+  "countAll": 123
+}
+```
+
 ### App.GetLoggedUsers
 Params:
 * page (start counting from 0)
@@ -88,4 +107,3 @@ It returns users list of existing sessions:
    // ...
 ]
 ```
-

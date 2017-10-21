@@ -14,7 +14,6 @@ func failOnError(err error, msg string) {
 	}
 }
 
-
 func userCreated(emailAddress string) {
 	publishEvent("{\"email_address\":\"" + emailAddress + "\"}", "users.created.auth")
 }
