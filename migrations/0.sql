@@ -1,0 +1,15 @@
+CREATE TABLE emails (
+  id INT NOT NULL AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL DEFAULT '',
+  CONSTRAINT emails_id PRIMARY KEY (ID),
+  UNIQUE(email)
+);
+
+CREATE TABLE sessions (
+  id INT NOT NULL,
+  session_key TEXT NOT NULL,
+  label TEXT NOT NULL,
+  CONSTRAINT emails_id PRIMARY KEY (ID)
+);
+
