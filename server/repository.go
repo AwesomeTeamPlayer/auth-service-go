@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 	"strconv"
 	"fmt"
 	"errors"
@@ -46,7 +47,7 @@ func insertEmail(emailAddress string) bool {
 	return true
 }
 
-func getEmails(offset int, limit int) ([]EmailRow, error) {
+func getEmails(offset uint, limit uint) ([]EmailRow, error) {
 	rows, err := connection.Query("SELECT email, password != '' FROM emails ORDER BY email LIMIT ?, ?", offset, limit)
 	if err != nil {
 		fmt.Println(err)
@@ -63,4 +64,16 @@ func getEmails(offset int, limit int) ([]EmailRow, error) {
 	}
 
 	return emailRows, nil
+}
+
+func countAllEmails() (uint, error) {
+	stmtOut, err := connection.Prepare("SELECT count(email) FROM emails")
+	var count uint
+	err = stmtOut.QueryRow().Scan(&count)
+	if err != nil {
+		fmt.Println(err)
+		return 0, errors.New("database error")
+	}
+
+	return count, nil
 }
